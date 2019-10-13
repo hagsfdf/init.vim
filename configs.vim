@@ -115,8 +115,8 @@ au BufRead,BufNewFile *.k set filetype=k
 au BufRead,BufNewFile *.v set filetype=coq
 au BufRead,BufNewFile *.ll set filetype=llvm
 
-let g:python_host_prog  = '/usr/bin/python2'
-let g:python3_host_prog = '/usr/bin/python3'
+let g:python_host_prog  = '/usr/local/bin/python2'
+let g:python3_host_prog = '/usr/local/bin/python3'
 " }}}
 
 " Themes {{{
@@ -285,6 +285,7 @@ let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, 
 " let g:ale_python_mypy_options = "-ignore-missing-imports"
 let g:ale_python_mypy_options = "--check-untyped-defs"
 let g:ale_python_pylint_options = "--disable=R,C,W0614,W0621"
+vmap \] :AsyncRun python3<CR>
 " }}}
 
 " Pandoc, Tex {{{
@@ -325,7 +326,7 @@ endfunc
 func! Zathura(file, ...)
     let check = get(a:, 1, 1)
     if l:check
-        call jobstart(['zathura', a:file, '--fork'])
+        call jobstart(['zathura', a:file])
     endif
 endfunc
 

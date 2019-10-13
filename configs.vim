@@ -288,7 +288,16 @@ let g:ale_c_clangformat_options = '-style="{BasedOnStyle: llvm, IndentWidth: 4, 
 " let g:ale_python_mypy_options = "-ignore-missing-imports"
 let g:ale_python_mypy_options = "--check-untyped-defs"
 let g:ale_python_pylint_options = "--disable=R,C,W0614,W0621"
-vmap \] :AsyncRun python3<CR>
+vmap \] :AsyncRun python3<CR>:call OpenPython()<CR>
+func! OpenPython()
+    augroup python_quickfix
+        au!
+        au QuickFixCmdPost caddexpr 
+                    \ cclose
+                    \ | exec 'vertical copen' &columns/3
+                    \ | au! python_quickfix
+    augroup END
+endfunc
 " }}}
 
 " Pandoc, Tex {{{
@@ -314,9 +323,10 @@ func! SetupPandoc()
     nmap <buffer><silent>gx <Plug>(pandoc-hypertext-open-system)
 endfunc
 func! RunPandoc(open)
+    cclose
     let src = expand("%:p")
     let out = expand("%:p:h") . '/' . expand("%:t:r") . '.pdf'
-    let params = '-Vurlcolor=cyan --highlight-style=kate'
+    let params = '-Vurlcolor=cyan'
     let post = "exec 'au! pandoc_quickfix'"
     let post .= a:open ? "|call Zathura('" . l:out . "',!g:asyncrun_code)" : ''
     let post = escape(post, ' ')
@@ -449,7 +459,7 @@ map <leader>M :Make<space>
 
 " quickfix, loclist, ...
 map <leader>co :copen 12<CR>
-map <leader>cv :vertical copen <C-R>=min([&columns-112,&columns/2])<CR>\|setlocal nowrap<CR>
+map <leader>cv :vertical copen <C-R>=&columns/3<CR>\|setlocal nowrap<CR>
 map ]q :cn<CR>
 map [q :cN<CR>
 map <silent><leader>x :pc\|ccl\|lcl<CR>
